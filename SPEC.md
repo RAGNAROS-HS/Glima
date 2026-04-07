@@ -27,8 +27,7 @@ Each stage is described in full below.
 
 ### Explicit Non-Goals
 
-- No new features. Glima only improves existing code.
-- No review of human-authored PRs. Glima only reviews its own PRs.
+- No new features. Glima only improves existing code — it never introduces new features, even when reviewing a human-authored PR.
 - No autonomous merges.
 
 ---
@@ -155,7 +154,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A([Webhook: pull_request.opened\nor pull_request.synchronize\nPR by BOT_GITHUB_LOGIN]) --> B[Count glima: apply review\ncommits on branch]
+    A([Webhook: pull_request.opened\nor pull_request.synchronize\nany PR author]) --> B[Count glima: apply review\ncommits on branch]
     B --> C{count >= MAX_FIX_ITERATIONS?}
     C -- Yes --> D[Close PR\nLabel issue: glima:halted\nPost escalation comment]
     D --> E([Halted — needs human])
@@ -217,14 +216,13 @@ webhook. HTTP 422 (label exists) is treated as success.
 |---|---|---|---|
 | `issues` | `opened` | labels include `glima:scout` | `fix.pipeline` |
 | `issues` | `labeled` | label name = `glima:scout` | `fix.pipeline` (idempotent) |
-| `pull_request` | `opened` | `pull_request.user.login === BOT_GITHUB_LOGIN` | `review.pipeline` |
-| `pull_request` | `synchronize` | `pull_request.user.login === BOT_GITHUB_LOGIN` | `review.pipeline` |
+| `pull_request` | `opened` | — | `review.pipeline` |
+| `pull_request` | `synchronize` | — | `review.pipeline` |
 | `push` | any | `sender.login === BOT_GITHUB_LOGIN` | Drop immediately |
 | `installation` | `created` | — | `labels.ensureLabels()` |
 | `ping` | — | — | 200 OK |
 
-**Not handled:** any event on a PR not opened by `BOT_GITHUB_LOGIN`; `pull_request_review`
-events; `issues` events where the action is not `opened` or `labeled`.
+**Not handled:** `pull_request_review` events; `issues` events where the action is not `opened` or `labeled`.
 
 **Idempotency:** Both `issues.opened` and `issues.labeled` can fire for the same issue when
 Scout creates and labels it in a single API call (GitHub behaviour varies). Both handlers must
@@ -448,7 +446,7 @@ runs at any time. This is safe because Glima is a single-process, single-repo se
 | Layer | Event | Rule |
 |---|---|---|
 | `webhooks.ts` | `push` | Drop if `sender.login === BOT_GITHUB_LOGIN` |
-| `review.pipeline.ts` | `pull_request.*` | Only handle if `pull_request.user.login === BOT_GITHUB_LOGIN` |
+| `review.pipeline.ts` | `pull_request.*` | Handle all PRs regardless of author. `pull_request.synchronize` fired by Glima pushing to a PR branch still triggers re-review because the check is on `pull_request.user.login` (the PR author), not `sender.login`. |
 | `fix.pipeline.ts` | `issues.*` | Do NOT block on `sender === BOT_GITHUB_LOGIN` — Scout creates issues as the bot, so fix MUST trigger. Check for existing PR instead. |
 
 ### 10.5 Iteration Count

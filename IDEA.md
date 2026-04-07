@@ -20,8 +20,7 @@ Glima stops when no glaring issues remain and only lateral (horizontal) moves ar
 
 ## Explicit non-goals
 
-- **No new features.** This is left entirely to the human engineer. PRs raised by humans that introduce features are not reviewed or touched by Glima.
-- **No human PR review.** Glima only reviews its own PRs via the adversarial reviewer. Reviewing human PRs is a separate concern with a different trust model and scope — it belongs in a different tool.
+- **No new features.** Glima never introduces new features, whether proactively or in response to a human PR. If a human opens a feature PR, Glima reviews and fixes any quality issues within it — but does not extend its scope beyond hardening.
 
 ## Principles
 
