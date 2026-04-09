@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C C:/Users/Hugo/Documents/GitHub/Glima show HEAD:SPEC)"
+      "Bash(git -C C:/Users/Hugo/Documents/GitHub/Glima show HEAD:SPEC)",
+      "Bash(npm install:*)",
+      "Bash(npm test:*)"
     ]
   }
 }

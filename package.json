@@ -1,0 +1,37 @@
+{
+  "name": "glima",
+  "version": "0.1.0",
+  "description": "GitHub App that hardens codebases via Scout → Fix → Adversarial Review pipeline",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@octokit/app": "^15.1.1",
+    "@octokit/rest": "^21.1.1",
+    "@octokit/webhooks": "^13.4.2",
+    "express": "^4.21.2",
+    "node-cron": "^3.0.3",
+    "openai": "^4.93.0",
+    "simple-git": "^3.27.0",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.14.0",
+    "@types/node-cron": "^3.0.11",
+    "@types/uuid": "^10.0.0",
+    "msw": "^2.7.3",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  }
+}
